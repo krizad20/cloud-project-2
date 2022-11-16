@@ -99,16 +99,9 @@ const Album = () => {
                     setStatus("Image Uploaded");
 
                     //put binary data to s3
-                    fetch("https://h3dxr2ypl4.execute-api.us-east-1.amazonaws.com/dev/cloud-project-2/img" + imgName, {
+                    fetch("https://h3dxr2ypl4.execute-api.us-east-1.amazonaws.com/dev/cloud-project-2/img/" + imgName, {
                         method: "PUT",
-                        body: picture,
-                        headers: {
-                            "Content-Type": "application/octet-stream",
-                            "Access-Control-Allow-Origin": "*",
-                            "Access-Control-Allow-Headers": "*",
-                            "Access-Control-Allow-Methods": "*",
-                            
-                        }
+                        body: picture
 
                     })
                         .then(res => res.json())
