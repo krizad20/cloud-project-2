@@ -59,10 +59,10 @@ const Album = () => {
 
             fetch("https://eq9lycfst4.execute-api.us-east-1.amazonaws.com/submit", {
                 method: "PUT",
-                data: {
+                body: JSON.stringify({
                     userID: user.email,
                     name: imgName
-                },
+                }),
             })
                 .then(res => res.json())
                 .then(data => {
