@@ -5,6 +5,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 const LoginButton = () => {
@@ -19,13 +20,20 @@ const LoginButton = () => {
     }
 
     if (isAuthenticated) {
+        console.log("user: ", user);
+        axios.put('https://eq9lycfst4.execute-api.us-east-1.amazonaws.com/users', {
+            userID: user.email,
+            data: user
+        })
         navigate('/Main')
+
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         loginWithRedirect();
-      };
+
+    };
 
 
     return (

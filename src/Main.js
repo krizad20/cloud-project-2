@@ -53,10 +53,6 @@ const Album = () => {
     }
 
 
-
-
-
-
     if (isLoading) {
         return <div>Loading ...</div>;
     }
