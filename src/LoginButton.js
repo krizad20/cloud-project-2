@@ -72,7 +72,7 @@ const LoginButton = () => {
                             onClick={handleSubmit}
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Sign In With Auth0
                         </Button>
                     </Box>
                 </Box>
