@@ -30,7 +30,7 @@ const Album = () => {
     const [picture, setPicture] = React.useState(null);
     const [imgData, setImgData] = React.useState(null);
 
-    function uploadImg(e) {
+    function previewImg(e) {
         if (e.target.files[0]) {
             console.log("picture: ", e.target.files);
             setPicture(e.target.files[0]);
@@ -42,7 +42,7 @@ const Album = () => {
                 img.onload = () => {
                     setDim(img.width + "x" + img.height);
                 };
-                setStatus("Image uploaded");
+                setStatus("Image Preview");
                 setImgData(reader.result);
                 setSize((e.target.files[0].size / 1024).toFixed(2));
                 setTime((new Date()).toLocaleString());
@@ -50,6 +50,41 @@ const Album = () => {
             reader.readAsDataURL(e.target.files[0]);
         }
 
+    }
+
+    function upload() {
+        if (picture) {
+            //get img name
+            const imgName = picture.name;
+
+            fetch("https://eq9lycfst4.execute-api.us-east-1.amazonaws.com/submit", {
+                method: "PUT",
+                data: {
+                    userID: user.email,
+                    name: imgName
+                },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    setStatus("Image Uploaded");
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            // fetch("https://api.cloudinary.com/v1_1/dxqjxqz5p/image/upload", {
+            //     method: "POST",
+            //     body: formData
+            // })
+            //     .then(res => res.json())
+            //     .then(data => {
+            //         console.log(data);
+            //         setStatus("Image Uploaded");
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
+        }
     }
 
 
@@ -149,9 +184,20 @@ const Album = () => {
                                 width: '100%',
                                 height: '50px'
                             }}
-                            onChange={(e) => uploadImg(e)}
+                            onChange={(e) => previewImg(e)}
 
                         />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            style={{
+                                width: '100px',
+                                height: '50px'
+                            }}
+                            onClick={() => upload()}
+                        >
+                            ส่ง
+                        </Button>
                     </Stack>
 
                     <Stack
