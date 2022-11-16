@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-
+import { useEffect, useState } from 'react';
 
 const theme = createTheme();
 
@@ -29,6 +29,32 @@ const Album = () => {
     const [time, setTime] = React.useState('');
     const [picture, setPicture] = React.useState(null);
     const [imgData, setImgData] = React.useState(null);
+
+    if (isAuthenticated && status === 'No image') {
+        fetch("https://eq9lycfst4.execute-api.us-east-1.amazonaws.com/submit/" + user.email, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                setImgData("https://cloud-project-2.s3.amazonaws.com/img/" + data.Item.name);
+                const img = new Image();
+                img.src = "https://cloud-project-2.s3.amazonaws.com/img/" + data.Item.name;
+                setStatus("Image Uploaded");
+                setDim(data.Item.dim);
+                setSize(data.Item.size);
+                setTime(data.Item.time);
+            }
+            )
+            .catch(err => {
+                console.log(err);
+            }
+            );
+    }
+
 
     function previewImg(e) {
         if (e.target.files[0]) {
@@ -61,13 +87,36 @@ const Album = () => {
                 method: "PUT",
                 body: JSON.stringify({
                     userID: user.email,
-                    name: imgName
+                    name: imgName,
+                    size: size,
+                    dim: dim,
+                    time: time
                 }),
             })
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);
                     setStatus("Image Uploaded");
+
+                    //put binary data to s3
+                    fetch("https://h3dxr2ypl4.execute-api.us-east-1.amazonaws.com/dev/cloud-project-2/img" + imgName, {
+                        method: "PUT",
+                        body: picture,
+                        headers: {
+                            "Content-Type": "application/octet-stream",
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Headers": "*",
+                            "Access-Control-Allow-Methods": "*",
+                            
+                        }
+
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data);
+                            setStatus("Image Uploaded");
+                        }
+                        )
                 })
                 .catch(err => {
                     console.log(err);
@@ -86,6 +135,8 @@ const Album = () => {
             //     });
         }
     }
+
+
 
 
     if (isLoading) {
