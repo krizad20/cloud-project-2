@@ -58,22 +58,56 @@ const Album = () => {
 
     function previewImg(e) {
         if (e.target.files[0]) {
-            console.log("picture: ", e.target.files);
-            setPicture(e.target.files[0]);
+
+            let width = 0;
+            let height = 0;
+
             const reader = new FileReader();
             reader.addEventListener("load", () => {
                 //get width and height of image
                 const img = new Image();
                 img.src = reader.result;
                 img.onload = () => {
-                    setDim(img.width + "x" + img.height);
+                    width = img.width;
+                    height = img.height;
+
+                    if (e.target.files[0].size > 50000) {
+                        alert("ไฟล์ต้องมีขนาดไม่เกิน 50 kb");
+                        e.target.value = null;
+                        setPicture(null);
+                        return;
+                    }
+
+                    else if (e.target.files[0].type !== "image/jpeg") {
+                        alert("ไฟล์ต้องเป็นไฟล์รูปภาพ JPG เท่านั้น");
+                        e.target.value = null;
+                        setPicture(null);
+                        return;
+                    }
+                    else if (width > 200 || height > 200) {
+                        alert("ขนาดรูปภาพต้องไม่เกิน 200 x 200 pixel");
+                        e.target.value = null;
+                        setPicture(null);
+                        return;
+                    }
+                    else {
+                        setStatus("Image Preview");
+                        setImgData(reader.result);
+                        setSize((e.target.files[0].size / 1024).toFixed(2));
+                        setTime((new Date()).toLocaleString());
+
+                        setPicture(e.target.files[0]);
+                        setDim(img.width + "x" + img.height);
+
+                    }
+
+
                 };
-                setStatus("Image Preview");
-                setImgData(reader.result);
-                setSize((e.target.files[0].size / 1024).toFixed(2));
-                setTime((new Date()).toLocaleString());
+
             });
             reader.readAsDataURL(e.target.files[0]);
+
+
         }
 
     }
