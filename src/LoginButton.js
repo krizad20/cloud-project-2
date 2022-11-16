@@ -24,8 +24,23 @@ const LoginButton = () => {
         axios.put('https://eq9lycfst4.execute-api.us-east-1.amazonaws.com/users', {
             userID: user.email,
             data: user
-        })
-        navigate('/Main')
+        },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': '*',
+                    'Access-Control-Allow-Headers': '*',
+                    
+                }
+            })
+            .then(function (response) {
+                console.log(response);
+                navigate('/main')
+            }
+            
+        )
+        // navigate('/Main')
 
     }
 
